@@ -1,8 +1,8 @@
 const connection = require('../config/connection');
 const { Thought, User } = require('../models');
-const us = require('./usernameData.json');
+const usr = require('./usernameData.json');
 const thoughts = require('./thoughtData.json');
-const usernames = us.map((user) => user.username);
+const usernames = [...usr];
 
 async function getRandomUser() {
   const randomIndex = Math.floor(Math.random() * usernames.length);
@@ -10,24 +10,42 @@ async function getRandomUser() {
   return usernames[randomIndex];
 }
 
-async function getRandomThoughts(num) {
-  for(let i = 0; i < num; i++) {
-    const randomIndex = Math.floor(Math.random() * thoughts.length);
-    thoughts.pop(randomIndex);
-    return thoughts[randomIndex];
+async function getRandomFriends(num, username) {
+  const potentialFriends = (() => {
+    const friends = [...usernames];
+    const index = friends.indexOf(username);
+    friends.splice(index, 1);
+    return friends;
+  });
+  
+  for(let i = 1; i < num; i++) {
+    const randomIndex = Math.floor(Math.random() * potentialFriends.length);
+    potentialFriends.push(potentialFriends[randomIndex]);
   }
+
+  return potentialFriends;
 }
 
+async function getRandomThoughts(num) {
+  const thisThoughts = []
+
+  for(let i = 1; i < num; i++) {
+    const randomIndex = Math.floor(Math.random() * thoughts.length);
+    thisThoughts.push(thoughts[randomIndex]);
+  }
+
+  return thisThoughts;
+}
 
 connection.on('error', (err) => err);
 
 connection.once('open', async () => {
   console.log('connected');
 
-  // Drop existing courses
-  await Course.deleteMany({});
+  // Drop existing thoughts
+  await Thought.deleteMany({});
 
-  // Drop existing Users
+  // Drop existing users
   await User.deleteMany({});
 
   // Create empty array to hold the Users
@@ -36,28 +54,31 @@ connection.once('open', async () => {
   // Loop 20 times -- add users to the Users array
   for (let i = 0; i < 20; i++) {
     // Get some random assignment objects using a helper function that we imported from ./data
-    const thoughts = getRandomThoughts(2);
-
-    const username = getRandomUser();
+    const thoughts = await getRandomThoughts(2);
+    const username = await getRandomUser().toLowerCase();
+    const friends = await getRandomFriends(3, username);
+    
     const email = `${ username }@example.com`.toLowerCase();
 
     users.push({
       username,
       email,
       thoughts: [...thoughts],
-      friends: [],
+      friends: [...friends],
     });
   }
 
   // Add Users to the collection and await the results
   await User.collection.insertMany(users);
 
-  // Add courses to the collection and await the results
+
+  // NOTE: not sure how to add thoughts to the collection
+/*   // Add thoughts to the collection and await the results
   await Thought.collection.insertOne({
     courseName: 'This is hard!',
     inPerson: false,
     users: [...users],
-  });
+  }); */
 
   // Log out the seed data to indicate what should appear in the database
   console.table(users);
