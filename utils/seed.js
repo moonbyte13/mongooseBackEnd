@@ -6,30 +6,34 @@ const usernames = [...usr];
 
 async function getRandomUser() {
   const randomIndex = Math.floor(Math.random() * usernames.length);
-  usernames.pop(randomIndex);
+  usernames.splice(randomIndex, 1);
   return usernames[randomIndex];
 }
 
 async function getRandomFriends(num, username) {
-  const potentialFriends = (() => {
-    const friends = [...usernames];
-    const index = friends.indexOf(username);
-    friends.splice(index, 1);
-    return friends;
-  });
+  const potentialFriends = usr.slice().filter((friend) => friend !== username);
+  potentialFriends.splice(potentialFriends.indexOf(username), 1);
+  console.log(potentialFriends);
   
-  for(let i = 1; i < num; i++) {
-    const randomIndex = Math.floor(Math.random() * potentialFriends.length);
-    potentialFriends.push(potentialFriends[randomIndex]);
+  if(potentialFriends.length === 0) {
+    throw new Error('There are no potential friends to choose from!');
   }
 
-  return potentialFriends;
+  const friends = [];
+
+  for (let i = 0; i < num; i++) {
+    const randomIndex = Math.floor(Math.random() * potentialFriends.length);
+    friends.push(potentialFriends[randomIndex]);
+  }
+
+  return friends;
 }
+
 
 async function getRandomThoughts(num) {
   const thisThoughts = []
 
-  for(let i = 1; i < num; i++) {
+  for(let i = 0; i < num; i++) {
     const randomIndex = Math.floor(Math.random() * thoughts.length);
     thisThoughts.push(thoughts[randomIndex]);
   }
@@ -55,7 +59,7 @@ connection.once('open', async () => {
   for (let i = 0; i < 20; i++) {
     // Get some random assignment objects using a helper function that we imported from ./data
     const thoughts = await getRandomThoughts(2);
-    const username = await getRandomUser().toLowerCase();
+    const username = await getRandomUser()
     const friends = await getRandomFriends(3, username);
     
     const email = `${ username }@example.com`.toLowerCase();
