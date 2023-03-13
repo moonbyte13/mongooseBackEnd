@@ -1,6 +1,23 @@
 const connection = require('../config/connection');
 const { Thought, User } = require('../models');
-const { getRandomName, getRandomAssignments } = require('./data');
+const us = require('./usernameData.json');
+const thoughts = require('./thoughtData.json');
+const usernames = us.map((user) => user.username);
+
+async function getRandomUser() {
+  const randomIndex = Math.floor(Math.random() * usernames.length);
+  usernames.pop(randomIndex);
+  return usernames[randomIndex];
+}
+
+async function getRandomThoughts(num) {
+  for(let i = 0; i < num; i++) {
+    const randomIndex = Math.floor(Math.random() * thoughts.length);
+    thoughts.pop(randomIndex);
+    return thoughts[randomIndex];
+  }
+}
+
 
 connection.on('error', (err) => err);
 
@@ -19,12 +36,10 @@ connection.once('open', async () => {
   // Loop 20 times -- add users to the Users array
   for (let i = 0; i < 20; i++) {
     // Get some random assignment objects using a helper function that we imported from ./data
-    const thoughts = getRandomAssignments(20);
+    const thoughts = getRandomThoughts(2);
 
-    const fullName = getRandomName();
-    const first = fullName.split(' ')[0];
-    const last = fullName.split(' ')[1];
-    const github = `${first}${Math.floor(Math.random() * (99 - 18 + 1) + 18)}`;
+    const username = getRandomUser();
+    const email = `${ username }@example.com`.toLowerCase();
 
     users.push({
       username,

@@ -1,110 +1,29 @@
 [
-  {
-    "thoughtText": "I love coding!",
-    "username": "JohnDoe"
-  },
-  {
-    "thoughtText": "Just finished a long day of work. Time to relax!",
-    "username": "JaneDoe"
-  },
-  {
-    "thoughtText": "I wish I could travel the world!",
-    "username": "Traveler123"
-  },
-  {
-    "thoughtText": "I can't wait for the weekend!",
-    "username": "WeekendWarrior"
-  },
-  {
-    "thoughtText": "Why does Monday have to come so fast?",
-    "username": "MondayBlues"
-  },
-  {
-    "thoughtText": "I need a vacation!",
-    "username": "StressedOut"
-  },
-  {
-    "thoughtText": "I miss my friends from college.",
-    "username": "Nostalgic"
-  },
-  {
-    "thoughtText": "Pizza is the best food ever!",
-    "username": "PizzaLover"
-  },
-  {
-    "thoughtText": "I wish I could adopt all the dogs in the world.",
-    "username": "DogLover"
-  },
-  {
-    "thoughtText": "I love hiking in the mountains.",
-    "username": "NatureLover"
-  },
-  {
-    "thoughtText": "Reading a good book is the best way to relax.",
-    "username": "BookWorm"
-  },
-  {
-    "thoughtText": "I'm excited for the new Marvel movie!",
-    "username": "MarvelFan"
-  },
-  {
-    "thoughtText": "I wish I had more time to paint.",
-    "username": "ArtistAtHeart"
-  },
-  {
-    "thoughtText": "I love playing video games in my free time.",
-    "username": "Gamer4Life"
-  },
-  {
-    "thoughtText": "I'm so proud of my kids!",
-    "username": "ProudParent"
-  },
-  {
-    "thoughtText": "I can't believe it's already summer!",
-    "username": "SummerTime"
-  },
-  {
-    "thoughtText": "I need more coffee!",
-    "username": "CoffeeAddict"
-  },
-  {
-    "thoughtText": "I can't wait for the new season of my favorite show!",
-    "username": "BingeWatcher"
-  },
-  {
-    "thoughtText": "I'm so grateful for my family.",
-    "username": "FamilyFirst"
-  },
-  {
-    "thoughtText": "I love going to concerts and music festivals.",
-    "username": "MusicLover"
-  },
-  {
-    "thoughtText": "I wish I had more time to travel.",
-    "username": "Wanderlust"
-  },
-  {
-    "thoughtText": "I hate getting stuck in traffic!",
-    "username": "RoadRage"
-  },
-  {
-    "thoughtText": "I'm so happy it's Friday!",
-    "username": "TGIF"
-  },
-  {
-    "thoughtText": "I can't wait for the holidays!",
-    "username": "HolidayCheer"
-  },
-  {
-    "thoughtText": "I need a break from social media.",
-    "username": "SocialMediaDetox"
-  },
-  {
-    "thoughtText": "I love watching the sunset.",
-    "username": "SunsetLover"
-  },
-  {
-    "thoughtText": "I'm excited for the future!",
-    "username": "Optimistic"
-  }
+  "I love coding!",
+  "Just finished a long day of work. Time to relax!",
+  "I wish I could travel the world!",
+  "I can't wait for the weekend!",
+  "Why does Monday have to come so fast?",
+  "I need a vacation!",
+  "I miss my friends from college.",
+  "Pizza is the best food ever!",
+  "I wish I could adopt all the dogs in the world.",
+  "I love hiking in the mountains.",
+  "Reading a good book is the best way to relax.",
+  "I'm excited for the new Marvel movie!",
+  "I wish I had more time to paint.",
+  "I love playing video games in my free time.",
+  "I'm so proud of my kids!",
+  "I can't believe it's already summer!",
+  "I need more coffee!",
+  "I can't wait for the new season of my favorite show!",
+  "I'm so grateful for my family.",
+  "I love going to concerts and music festivals.",
+  "I wish I had more time to travel.",
+  "I hate getting stuck in traffic!",
+  "I'm so happy it's Friday!",
+  "I can't wait for the holidays!",
+  "I need a break from social media.",
+  "I love watching the sunset.",
+  "I'm excited for the future!"
 ]
