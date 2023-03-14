@@ -1,17 +1,9 @@
 const { Schema, model } = require('mongoose');
 
-const dateFormat = (date) => {
-  return Intl.DateTimeFormat('en-US', {
-    month: '2-digit',
-    day: '2-digit',
-    year: 'numeric'
-  }).format(date);
-};
-
 const reactionSchema = new Schema({
   reactionId: {
     type: Schema.Types.ObjectId,
-    default: () => new mongoose.Types.ObjectId()
+    default: () => new Types.ObjectId()
   },
   reactionBody: {
     type: String,
@@ -61,5 +53,6 @@ thoughtSchema.virtual('reactionCount').get(function() {
 });
 
 const Thought = model('Thought', thoughtSchema);
+const Reaction = model('Reaction', reactionSchema);
 
-module.exports = Thought;
+module.exports = { Thought, Reaction };

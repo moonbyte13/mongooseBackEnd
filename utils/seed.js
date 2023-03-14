@@ -1,5 +1,6 @@
 const connection = require('../config/connection');
-const { Thought, User } = require('../models');
+const { Thought, Reaction } = require('../models/Thought');
+const { User } = require('../models');
 // ObjectId() method for converting Id string into an ObjectId for querying database
 const { ObjectId } = require('mongoose').Types;
 const userData = require('./usernameData.json');
@@ -12,7 +13,7 @@ const getRandomResponse = async (num, res) => {
     const randomIndex = Math.floor(Math.random() * res.length);
     for(let j = 0; j < rspns.length; j++) {
       if(rspns[j] !== res[randomIndex]) {
-        continue;
+        break;
       }
     }
     rspns.push(res[randomIndex]);
@@ -114,7 +115,7 @@ connection.once('open', async () => {
     for(let i = 0; i < allThoughts.length; i++) {
     const numReactions = Math.floor(Math.random() * 6);
     const reactions = await getRandomResponse(numReactions, [...responseData]);
-    const id = await Thought.findOne({thoughtText: allThoughts[i].thoughtText}, '_id').exec();
+    const id = await Thought.findOne({ thoughtText: allThoughts[i].thoughtText }, '_id').exec();
     allThoughts[i].reactions = { id, reactions };
     await allThoughts[i].save();
     }
