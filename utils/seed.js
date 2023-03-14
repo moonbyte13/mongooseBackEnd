@@ -33,7 +33,7 @@ const getRandomThoughts = async (num, thoughts) => {
 
   for(let i = 0; i < num; i++) {
     const randomIndex = Math.floor(Math.random() * thoughts.length);
-    thisThoughts.push(thoughts[randomIndex]);
+    thisThoughts.push({ thoughtText: thoughts[randomIndex] });
   }
 
   return thisThoughts;
