@@ -59,12 +59,14 @@ connection.once('open', async () => {
     const thoughts = await getRandomThoughts(2, thoughtData);
     const username = await getRandomUser(userData.map(user => user.username));
     const friends = await getRandomFriends(3, username, userData.map(user => user.username));
+    const id = userData[i]._id;
     const email = `${ username }@example.com`
     
-    const user = await User.create({ username, email });
+    const user = await User.create({ id, username, email });
 
     for (let j = 0; j < thoughts.length; j++) {
-      await Thought.create({ thoughtText: thoughts[j], username: user.username });
+      const singleThought = thoughts[j]
+      await Thought.create({ thoughtText: singleThought.thoughtText, username: user.username });
       user.thoughts.push(thoughts[j]);
     }
 
