@@ -57,13 +57,18 @@ module.exports = {
   },
 
   // Delete a user and associated thoughts
-  async deleteUser(req, res) {
+  async deleteStudent(req, res) {
     try {
-      const user = await User
+      const deletedUser = await User
         .findByIdAndDelete(req.params.id);
-      await Thought
-        .deleteMany({ username: user.username });
-      res.json(user);
+  
+      if (!deletedUser) {
+        return res.status(404).json({ message: 'No user found with this id!' });
+      }
+  
+      await Thought.deleteMany({ username: deletedUser.username });
+  
+      res.json({ message: 'User and associated thoughts deleted!' });
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
