@@ -3,6 +3,12 @@ const { Thought, User } = require('../models');
 const userData = require('./usernameData.json');
 const thoughtData = require('./thoughtData.json');
 
+findId = async (username) => {
+  const user = await findById({ username: username }).exec();
+  const uId = user._id;
+  return uId;
+}
+
 const getRandomUser = async (usernames) => {
   const randomIndex = Math.floor(Math.random() * usernames.length);
   return usernames[randomIndex];
@@ -11,7 +17,6 @@ const getRandomUser = async (usernames) => {
 const getRandomFriends = async (num, username, usrFriends) => {
   const potentialFriends = usrFriends.filter((friend) => friend !== username);
   potentialFriends.splice(potentialFriends.indexOf(username), 1);
-  console.log(potentialFriends);
 
   if(potentialFriends.length === 0) {
     throw new Error('There are no potential friends to choose from!');
@@ -21,9 +26,13 @@ const getRandomFriends = async (num, username, usrFriends) => {
 
   for (let i = 0; i < num; i++) {
     const randomIndex = Math.floor(Math.random() * potentialFriends.length);
+    for(let j = 0; j < friends.length; j++) {
+      if(friends[j] !== potentialFriends[randomIndex]) {
+        continue;
+      }
+    }
     friends.push(potentialFriends[randomIndex]);
   }
-
   return friends;
 }
 
@@ -33,7 +42,12 @@ const getRandomThoughts = async (num, thoughts) => {
 
   for(let i = 0; i < num; i++) {
     const randomIndex = Math.floor(Math.random() * thoughts.length);
-    thisThoughts.push({ thoughtText: thoughts[randomIndex] });
+    for(let j = 0; j < thisThoughts.length; j++) {
+      if(thisThoughts[j] !== thoughts[randomIndex]) {
+        continue;
+      }
+    }
+    thisThoughts.push(thoughts[randomIndex]);
   }
 
   return thisThoughts;
@@ -52,26 +66,31 @@ connection.once('open', async () => {
 
   // Create empty array to hold the Users
   const users = [];
+  const allThoughts = [];
 
   // Loop 20 times -- add users to the Users array
   for (let i = 0; i < userData.length; i++) {
     // Get some random assignment objects using a helper function that we imported from ./data
-    const thoughts = await getRandomThoughts(2, thoughtData);
-    const username = await getRandomUser(userData.map(user => user.username));
-    const friends = await getRandomFriends(3, username, userData.map(user => user.username));
-    const id = userData[i]._id;
+    const thoughts = await getRandomThoughts(3, [...thoughtData]);
+    const username = await getRandomUser([...userData]);
+    const friends = await getRandomFriends(3, username, [...userData]);
     const email = `${ username }@example.com`
-    
-    const user = await User.create({ id, username, email });
+    const user = { username: username, email: email.toLowerCase(), thoughts: [], friends: []}
+    userData.splice(userData.indexOf(username), 1);
 
     for (let j = 0; j < thoughts.length; j++) {
-      const singleThought = thoughts[j]
-      await Thought.create({ thoughtText: singleThought.thoughtText, username: user.username });
-      user.thoughts.push(thoughts[j]);
+      allThoughts.push({ 
+        thoughtText: thoughts[j],
+        username: username,
+      });
+      user.thoughts.push({ 
+        thoughtText: thoughts[j],
+        username: username,
+      });
     }
 
     for (let j = 0; j < friends.length; j++) {
-      user.friends.push(await User.findOne({ username: friends[j] }));
+      user.friends.push( friends[j] );
     }
 
     users.push(user);
@@ -79,15 +98,7 @@ connection.once('open', async () => {
 
   // Add Users to the collection and await the results
   await User.collection.insertMany(users);
-
-
-  // NOTE: not sure how to add thoughts to the collection
-/*   // Add thoughts to the collection and await the results
-  await Thought.collection.insertOne({
-    courseName: 'This is hard!',
-    inPerson: false,
-    users: [...users],
-  }); */
+  await Thought.collection.insertMany(allThoughts);
 
   // Log out the seed data to indicate what should appear in the database
   console.table(users);

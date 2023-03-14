@@ -13,7 +13,8 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please enter a valid email address']
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please enter a valid email address'],
+      minlength: 6
     },
     thoughts: [{
       type: Schema.Types.ObjectId,
