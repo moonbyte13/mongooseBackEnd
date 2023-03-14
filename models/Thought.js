@@ -25,7 +25,8 @@ const reactionSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    get: (createdAtVal) => dateFormat(createdAtVal)
+    // create index for sorting reactions in descending order
+    index: { createdAt: -1 }
   }
 });
 
@@ -39,7 +40,7 @@ const thoughtSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    get: (createdAtVal) => dateFormat(createdAtVal)
+    index: { createdAt: -1 }
   },
   username: {
     type: String,

@@ -1,17 +1,30 @@
 const connection = require('../config/connection');
 const { Thought, User } = require('../models');
+// ObjectId() method for converting Id string into an ObjectId for querying database
+const { ObjectId } = require('mongoose').Types;
 const userData = require('./usernameData.json');
 const thoughtData = require('./thoughtData.json');
+const responseData = require('./responseData.json');
 
-findId = async (username) => {
-  const user = await findById({ username: username }).exec();
-  const uId = user._id;
-  return uId;
+const getRandomResponse = async (num, res) => {
+  const rspns = []
+  for (let i = 0; i < num; i++) {
+    const randomIndex = Math.floor(Math.random() * res.length);
+    for(let j = 0; j < rspns.length; j++) {
+      if(rspns[j] !== res[randomIndex]) {
+        continue;
+      }
+    }
+    rspns.push(res[randomIndex]);
+  }
+  return rspns;
 }
 
-const getRandomUser = async (usernames) => {
-  const randomIndex = Math.floor(Math.random() * usernames.length);
-  return usernames[randomIndex];
+const getRandomUser = async () => {
+  const allUsers = await User.find({});
+  console.log('ln 23', allUsers);
+  const randomIndex = Math.floor(Math.random() * allUsers.length);
+  return allUsers[randomIndex].username;
 }
 
 const getRandomFriends = async (num, username, usrFriends) => {
@@ -31,13 +44,13 @@ const getRandomFriends = async (num, username, usrFriends) => {
         continue;
       }
     }
-    friends.push(potentialFriends[randomIndex]);
+    const friendID = await User.findOne({username: potentialFriends[randomIndex]}, '_id').exec();
+    friends.push(friendID);
   }
   return friends;
 }
 
-
-const getRandomThoughts = async (num, thoughts) => {
+const getRandomThoughts = async (num, thoughts, username) => {
   const thisThoughts = [];
 
   for(let i = 0; i < num; i++) {
@@ -47,7 +60,21 @@ const getRandomThoughts = async (num, thoughts) => {
         continue;
       }
     }
-    thisThoughts.push(thoughts[randomIndex]);
+    const thought = await Thought.create({
+      thoughtText: thoughts[randomIndex],
+      username: username,
+    });
+    const responses = await getRandomResponse(Math.floor(Math.random() * 6), [...responseData]);
+    const reactions = responses.map(async response => {
+      return {
+        id: new ObjectId(),
+        reactionBody: response,
+        username: await getRandomUser(),
+      }
+    });
+    thought.reactions = reactions;
+    await thought.save();
+    thisThoughts.push(thought);
   }
 
   return thisThoughts;
@@ -57,51 +84,54 @@ connection.on('error', (err) => err);
 
 connection.once('open', async () => {
   console.log('connected');
-
+  
   // Drop existing thoughts
   await Thought.deleteMany({});
 
   // Drop existing users
   await User.deleteMany({});
 
-  // Create empty array to hold the Users
-  const users = [];
-  const allThoughts = [];
-
-  // Loop 20 times -- add users to the Users array
+  // Add users to the Users array
   for (let i = 0; i < userData.length; i++) {
-    // Get some random assignment objects using a helper function that we imported from ./data
-    const thoughts = await getRandomThoughts(3, [...thoughtData]);
-    const username = await getRandomUser([...userData]);
-    const friends = await getRandomFriends(3, username, [...userData]);
-    const email = `${ username }@example.com`
-    const user = { username: username, email: email.toLowerCase(), thoughts: [], friends: []}
-    userData.splice(userData.indexOf(username), 1);
-
+    const username = userData[i];
+    const user = await User.create({ 
+      username: username, 
+      email: `${ username }@example.com`,
+    });
+    const thoughts = await getRandomThoughts(3, [...thoughtData], username);
     for (let j = 0; j < thoughts.length; j++) {
-      allThoughts.push({ 
-        thoughtText: thoughts[j],
-        username: username,
-      });
-      user.thoughts.push({ 
-        thoughtText: thoughts[j],
-        username: username,
-      });
+      thoughts[j].username = user.username;
+      await thoughts[j].save();
     }
-
+    const friends = await getRandomFriends(3, username, [...userData]);
     for (let j = 0; j < friends.length; j++) {
-      user.friends.push( friends[j] );
+      user.addFriend(friends[j]);
     }
-
-    users.push(user);
-  }
-
-  // Add Users to the collection and await the results
-  await User.collection.insertMany(users);
-  await Thought.collection.insertMany(allThoughts);
-
-  // Log out the seed data to indicate what should appear in the database
-  console.table(users);
-  console.info('Seeding complete! 🌱');
-  process.exit(0);
+    }
+    
+    // Add reactions to random thoughts
+    const allThoughts = await Thought.find({});
+    for(let i = 0; i < allThoughts.length; i++) {
+    const numReactions = Math.floor(Math.random() * 6);
+    const reactions = await getRandomResponse(numReactions, [...responseData]);
+    const id = await Thought.findOne({thoughtText: allThoughts[i].thoughtText}, '_id').exec();
+    allThoughts[i].reactions = { id, reactions };
+    await allThoughts[i].save();
+    }
+    
+    // Add random friends to each user
+    const allUsers = await User.find({});
+    for(let i = 0; i < allUsers.length; i++) {
+    const user = allUsers[i];
+    const numFriends = Math.floor(Math.random() * 3);
+    const friends = await getRandomFriends(numFriends, user.username, [...userData]);
+    for(let j = 0; j < friends.length; j++) {
+    user.addFriend(friends[j]);
+    }
+    }
+    
+    console.log('finished seeding data');
+    process.exit(0);
 });
+    
+    module.exports = { getRandomResponse, getRandomUser, getRandomFriends, getRandomThoughts };
