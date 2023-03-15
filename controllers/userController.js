@@ -55,7 +55,7 @@ module.exports = {
   },
 
   // Delete a user and associated thoughts
-  async deleteStudent(req, res) {
+  async deleteUser(req, res) {
     try {
       const deletedUser = await User
         .findByIdAndDelete(req.params.id);
