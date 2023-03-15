@@ -7,7 +7,7 @@ module.exports = {
       const thoughts = await Thought.find();
       res.json(thoughts);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   },
 
@@ -17,7 +17,7 @@ module.exports = {
       const thought = await Thought.findById(req.params.thoughtId);
       res.json(thought);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   },
 
@@ -33,7 +33,7 @@ module.exports = {
       );
       res.json(updatedUser);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   },
 
@@ -43,7 +43,7 @@ module.exports = {
       const updatedThought = await Thought.findByIdAndUpdate(req.params.thoughtId, req.body, { new: true });
       res.json(updatedThought);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   },
 
@@ -54,7 +54,7 @@ module.exports = {
       await User.findByIdAndUpdate(thought.userId, { $pull: { thoughts: thought._id } });
       res.json(thought);
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   },
 
@@ -76,8 +76,8 @@ module.exports = {
   
       res.json(updatedThought);
     } catch (err) {
-      console.error(err);
-      res.status(500).json(err);
+      console.error(err.message);
+      res.status(500).json(err).message;
     }
   },
 
@@ -95,8 +95,8 @@ module.exports = {
   
       res.json({ message: 'Reaction successfully deleted' });
     } catch (err) {
-      console.error(err);
-      res.status(500).json(err);
+      console.error(err.message);
+      res.status(500).json(err.message);
     }
   }
 };

@@ -25,8 +25,8 @@ module.exports = {
         .populate('friends');
       res.json(user);
     } catch (err) {
-      console.log(err);
-      res.status(500).json(err);
+      console.log(err.message);
+      res.status(500).json(err.message);
     }
   },
 
@@ -38,7 +38,7 @@ module.exports = {
       res.json(user);
     } catch (err) {
       console.log(err);
-      res.status(500).json(err);
+      res.status(500).json(err.message);
     }
   },
   
@@ -49,8 +49,8 @@ module.exports = {
         .findByIdAndUpdate(req.params.id, req.body, { new: true });
       res.json(user);
     } catch (err) {
-      console.log(err);
-      res.status(500).json(err);
+      console.log(err.message);
+      res.status(500).json(err.message);
     }
   },
 
@@ -68,8 +68,8 @@ module.exports = {
   
       res.json({ message: 'User and associated thoughts deleted!' });
     } catch (err) {
-      console.log(err);
-      res.status(500).json(err);
+      console.log(err.message);
+      res.status(500).json(err.message);
     }
   },
 
@@ -88,7 +88,7 @@ module.exports = {
       await currentUser.save();
       res.json(currentUser);
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
       res.status(500).json({ message: 'Internal server error' });
     }
   },
@@ -108,7 +108,7 @@ module.exports = {
       await currentUser.save();
       res.json(currentUser);
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
       res.status(500).json({ message: 'Internal server error' });
     }
   }
