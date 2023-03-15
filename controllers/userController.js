@@ -90,7 +90,7 @@ module.exports = {
             }
             currentUser.friends.push(friendToAdd._id);
             await currentUser.save();
-            res.json(currentUser);
+            res.json({ message: 'Friend added' });
         } catch (err) {
             console.log(err.message);
             res.status(500).json({ message: 'Internal server error' });
@@ -117,7 +117,7 @@ module.exports = {
                     friendId.toString() !== friendToRemove._id.toString()
             );
             await currentUser.save();
-            res.json(currentUser);
+            res.json({ message: 'Friend removed' });
         } catch (err) {
             console.log(err.message);
             res.status(500).json({ message: 'Internal server error' });

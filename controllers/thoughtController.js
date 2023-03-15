@@ -61,7 +61,7 @@ module.exports = {
             await User.findByIdAndUpdate(thought.userId, {
                 $pull: { thoughts: thought._id },
             });
-            res.json(thought);
+            res.json({ message: 'Thought successfully deleted' });
         } catch (err) {
             res.status(500).json(err.message);
         }

@@ -1,11 +1,11 @@
-const { Schema, model } = require('mongoose');
-const { ObjectId } = Schema.Types;
+const { Schema, model, Types } = require('mongoose');
+// const { ObjectId } = Schema.Types;
 
 const reactionSchema = new Schema({
-    /* reactionId: {
+    reactionId: {
         type: Schema.Types.ObjectId,
-        // default: () => new ObjectId(),
-    }, */
+        default: () => new Types.ObjectId(),
+    },
     reactionBody: {
         type: String,
         required: true,
@@ -21,6 +21,12 @@ const reactionSchema = new Schema({
         // create index for sorting reactions in descending order
         index: { createdAt: -1 },
     },
+},
+{
+    toJSON: {
+        getters: true,
+    },
+    id: false,
 });
 
 const Reaction = model('Reaction', reactionSchema);
