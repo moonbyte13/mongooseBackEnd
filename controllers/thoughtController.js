@@ -25,8 +25,13 @@ module.exports = {
   async createThought(req, res) {
     try {
       const thought = await Thought.create(req.body);
-      await User.findByIdAndUpdate(thought.userId, { $push: { thoughts: thought._id } });
-      res.json(thought);
+      console.log(thought);
+      const updatedUser = await User.findOneAndUpdate(
+        { username: thought.username },
+        { $push: { thoughts: thought._id } },
+        { new: true }
+      );
+      res.json(updatedUser);
     } catch (err) {
       res.status(500).json(err);
     }

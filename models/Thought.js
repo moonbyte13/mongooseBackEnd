@@ -32,6 +32,7 @@ const thoughtSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+    // create index for sorting thoughts in descending order
     index: { createdAt: -1 }
   },
   username: {
