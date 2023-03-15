@@ -1,4 +1,4 @@
-const { Thought, User } = require('../models');
+const { Thought, User, Reaction } = require('../models');
 
 module.exports = {
     // Get all thoughts
@@ -25,9 +25,10 @@ module.exports = {
     async createThought(req, res) {
         try {
             const thought = await Thought.create(req.body);
-            console.log(thought);
+            console.log(thought._id);
             const updatedUser = await User.findOneAndUpdate(
                 { username: thought.username },
+                // NOTE: this is where I am supposed to pass the thought._id to the thoughts array
                 { $push: { thoughts: thought._id } },
                 { new: true }
             );
@@ -75,7 +76,7 @@ module.exports = {
             // create the new reaction object
             const newReaction = await Reaction.create({
                 reactionBody,
-                username: req.user.username,
+                username: req.body.username,
             });
 
             // find the thought with the given ID and push the new reaction into its reactions array
