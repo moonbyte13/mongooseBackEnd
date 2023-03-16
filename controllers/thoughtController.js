@@ -28,11 +28,10 @@ module.exports = {
             console.log(thought._id);
             const updatedUser = await User.findOneAndUpdate(
                 { username: thought.username },
-                // NOTE: this is where I am supposed to pass the thought._id to the thoughts array
-                { $push: { thoughts: thought._id } },
+                { $push: { thoughts: thought } },
                 { new: true }
             );
-            res.json(updatedUser);
+            res.json(thought);
         } catch (err) {
             res.status(500).json(err.message);
         }
@@ -71,11 +70,10 @@ module.exports = {
     async addReaction(req, res) {
         try {
             const { thoughtId } = req.params;
-            const { reactionBody } = req.body;
 
             // create the new reaction object
             const newReaction = await Reaction.create({
-                reactionBody,
+                reactionBody: req.body.reactionBody,
                 username: req.body.username,
             });
 
@@ -86,7 +84,7 @@ module.exports = {
                 { new: true }
             );
 
-            res.json(updatedThought);
+            res.json(newReaction);
         } catch (err) {
             console.error(err.message);
             res.status(500).json(err).message;
