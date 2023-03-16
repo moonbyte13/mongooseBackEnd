@@ -12,9 +12,9 @@ connect(connectionString, {
 });
 
 connection.on('connected', async () => {
-  //await User.deleteMany({});
-  //await Thought.deleteMany({});
-  //await Reaction.deleteMany({});
+  await User.deleteMany({});
+  await Thought.deleteMany({});
+  await Reaction.deleteMany({});
   console.log(`Mongoose connected to ${connectionString}`);
 
 });
