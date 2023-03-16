@@ -18,8 +18,7 @@ const reactionSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        // create index for sorting reactions in descending order
-        index: { createdAt: -1 },
+        required: true
     },
 },
 {
